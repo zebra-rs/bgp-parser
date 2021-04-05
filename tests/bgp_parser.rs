@@ -10,8 +10,13 @@ ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
         "
     );
     let (rem, res) = parse_bgp_packet(BGP_KEEPALIVE).expect("parse is failed");
-    println!("rem {:?}", rem);
-    println!("res {:?}", res);
+    assert!(rem.is_empty());
+    if let BgpPacket::KeepAlive(pkt) = res {
+        assert_eq!(pkt.header.packet_length, 19);
+        assert_eq!(pkt.header.packet_type, BgpPacketType::KeepAlive);
+    } else {
+        panic!("wrong packet type");
+    }
 }
 
 // #[test]

@@ -1,7 +1,8 @@
+use crate::*;
 use nom::bytes::complete::take;
+use nom::combinator::{map, peek};
 use nom::error::{make_error, ErrorKind};
-
-pub use nom::IResult;
+use nom::IResult;
 
 fn parse_marker(input: &[u8]) -> IResult<&[u8], &[u8]> {
     let (rem, res) = take(16usize)(input)?;
@@ -13,7 +14,12 @@ fn parse_marker(input: &[u8]) -> IResult<&[u8], &[u8]> {
     Ok((rem, res))
 }
 
-pub fn parse_bgp_packet(input: &[u8]) -> IResult<&[u8], &[u8]> {
-    let (rem, res) = parse_marker(input)?;
-    Ok((rem, res))
+pub fn parse_bgp_packet(input: &[u8]) -> IResult<&[u8], BgpPacket> {
+    let (rem, _) = parse_marker(input)?;
+    let (_, ltype) = peek(take(3u8))(rem)?;
+
+    match BgpPacketType(ltype[2] as u8) {
+        BgpPacketType::KeepAlive => map(BgpKeepAlivePacket::parse, BgpPacket::KeepAlive)(rem),
+        _ => Err(nom::Err::Error(make_error(rem, ErrorKind::Tag))),
+    }
 }
