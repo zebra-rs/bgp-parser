@@ -1,9 +1,14 @@
 [package]
 name = "bgp-parser"
 version = "0.1.0"
-authors = ["Kunihiro Ishiguro <ishi@hash-set.com>"]
+description = "Parser for the BGP version 4"
+license = "MIT/Apache-2.0"
+authors = ["Kunihiro Ishiguro <kunihiro@zebra.dev>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+nom = "6"
+rusticata-macros = "3.0"
+
+[dev-dependencies]
+hex-literal = "0.3"

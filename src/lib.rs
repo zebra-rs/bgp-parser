@@ -1,7 +1,5 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+mod bgp;
+mod parser;
+
+pub use bgp::*;
+pub use parser::*;
