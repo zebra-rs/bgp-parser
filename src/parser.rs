@@ -19,6 +19,11 @@ pub fn parse_bgp_packet(input: &[u8]) -> IResult<&[u8], BgpPacket> {
     let (_, ltype) = peek(take(3u8))(rem)?;
 
     match BgpPacketType(ltype[2] as u8) {
+        BgpPacketType::Open => map(BgpOpenPacket::parse, BgpPacket::Open)(rem),
+        BgpPacketType::Update => map(BgpUpdatePacket::parse, BgpPacket::Update)(rem),
+        BgpPacketType::Notification => {
+            map(BgpNotificationPacket::parse, BgpPacket::Notification)(rem)
+        }
         BgpPacketType::KeepAlive => map(BgpKeepAlivePacket::parse, BgpPacket::KeepAlive)(rem),
         _ => Err(nom::Err::Error(make_error(rem, ErrorKind::Tag))),
     }
